@@ -1,0 +1,100 @@
+<IfModule mod_rewrite.c>
+    <IfModule mod_negotiation.c>
+        Options -MultiViews
+    </IfModule>
+
+    RewriteEngine On
+    # RewriteBase /
+
+    # Black listed folders
+    RewriteRule ^app/.* index.php [L,NC]
+    RewriteRule ^boostrap/.* index.php [L,NC]
+    RewriteRule ^config/.* index.php [L,NC]
+    RewriteRule ^database/.* index.php [L,NC]
+    RewriteRule ^resources/.* index.php [L,NC]
+    RewriteRule ^routes/.* index.php [L,NC]
+    RewriteRule ^vendor/.* index.php [L,NC]
+    RewriteRule ^storage/private/.* index.php [L,NC]
+    RewriteRule ^storage/logs/.* index.php [L,NC]
+    RewriteRule ^storage/framework/.* index.php [L,NC]
+    RewriteRule ^tests/.* index.php [L,NC]
+
+    # White listed folders
+    RewriteCond %{REQUEST_FILENAME} -f
+    RewriteCond %{REQUEST_FILENAME} !/.well-known/*
+    RewriteCond %{REQUEST_FILENAME} !/storage/public/.*
+    RewriteCond %{REQUEST_FILENAME} !/assets/.*
+
+    # Redirect Trailing Slashes If Not A Folder...
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_URI} (.+)/$
+    RewriteRule ^ %1 [L,R=301]
+
+    # Block all PHP files, except index
+    RewriteCond %{REQUEST_FILENAME} -f
+    RewriteCond %{REQUEST_FILENAME} \.php$
+    RewriteRule !^index.php index.php [L,NC]
+
+    # Handle Front Controller...
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteRule ^ index.php [L]
+
+    # Handle Authorization Header
+    RewriteCond %{HTTP:Authorization} .
+    RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+</IfModule>
+
+<Files "artisan">
+    Order Allow,Deny
+    Deny from all
+</Files>
+<Files "package.json">
+    Order Allow,Deny
+    Deny from all
+</Files>
+<Files "package.lock">
+    Order Allow,Deny
+    Deny from all
+</Files>
+<Files "webpack.mix.js">
+    Order Allow,Deny
+    Deny from all
+</Files>
+<Files "composer.json">
+    Order Allow,Deny
+    Deny from all
+</Files>
+<Files "composer.lock">
+    Order Allow,Deny
+    Deny from all
+</Files>
+<Files "phpunit.xml">
+    Order Allow,Deny
+    Deny from all
+</Files>
+<Files "php.ini">
+    Order Allow,Deny
+    Deny from all
+</Files>
+<Files ".htaccess">
+    Order Allow,Deny
+    Deny from all
+</Files>
+<Files ".env">
+    Order Allow,Deny
+    Deny from all
+</Files>
+<Files ".env.example">
+    Order Allow,Deny
+    Deny from all
+</Files>
+<Files ".gitignore">
+    Order Allow,Deny
+    Deny from all
+</Files>
+
+# Errors
+ErrorDocument 404 /index.php
+ErrorDocument 403 /index.php
+ErrorDocument 503 /index.php
