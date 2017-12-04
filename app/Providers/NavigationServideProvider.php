@@ -26,6 +26,9 @@ class NavigationServideProvider extends ServiceProvider
                 new NavigationItem('admin.accounts.groups.index', 'Nhóm tài khoản', 'admin.accounts.groups.index', 'accounts.groups.index')
             ]
         ));
+        $navigation->register(new NavigationItem(
+            'admin.pages.index', 'Trang nội dung', 'admin.pages.index', '*', 'fa fa-fw fa-file-text'
+        ));
     }
 
     /**

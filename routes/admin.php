@@ -23,4 +23,12 @@ Route::group([
         Route::put('users/{user}/photo', 'UserPhotoController@update')->name('users.photo.update');
         Route::delete('users/{user}/photo', 'UserPhotoController@destroy')->name('users.photo.destroy');
     });
+
+    // Pages
+    Route::group([
+        'namespace' => 'Page'
+    ], function () {
+    Route::get('pages/actions', 'PageActionController@index')->name('pages.actions');
+    Route::resource('pages', 'PageController', ['except' => ['show', 'destroy']]);
+    });
 });

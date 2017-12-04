@@ -33,4 +33,5 @@
 
 @push('footer')
     @include('admin.partials.scripts')
+    @stack('scripts')
 @endpush
