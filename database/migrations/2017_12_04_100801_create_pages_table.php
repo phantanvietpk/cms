@@ -15,21 +15,13 @@ class CreatePagesTable extends Migration
     {
         Schema::create('pages', function (Blueprint $table) {
             $table->mediumIncrements('id');
-            $table->string('thumbnail')->nullable();
-            $table->boolean('published')->default(false);
-            $table->timestamp('published_at');
-            $table->timestamps();
-        });
-
-        Schema::create('page_languages', function (Blueprint $table) {
-            $table->mediumIncrements('id');
-            $table->string('locale')->index();
             $table->string('name');
             $table->string('slug')->index()->nullable();
             $table->string('description');
             $table->text('content');
-            $table->mediumInteger('page_id', false, true)->index();
-            $table->foreign('page_id')->references('id')->on('pages')->onDelete('cascade');
+            $table->boolean('published')->default(false);
+            $table->timestamp('published_at');
+            $table->timestamps();
         });
     }
 

@@ -1,5 +1,5 @@
 <td>
-    <strong>{{ $item->title }}</strong><br>
+    <strong>{{ $item->name }}</strong><br>
     <div class="row-action">
         @can('pages.edit')
             <a href="{{ route('admin.pages.edit', $item->id) }}">
@@ -17,5 +17,8 @@
         @endcan
     </div>
 </td>
-<td>{{ number_format($item->users_count) }}</td>
+<td>{!! sprintf( '<span class="label label-%s">%s</span>',
+                    $item->published ? 'success' : 'warning',
+                    $item->published ? trans('language.published') : trans('language.trashed')
+                ) !!}</td>
 <td>{{ $item->created_at }}</td>

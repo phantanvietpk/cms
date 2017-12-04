@@ -27,8 +27,8 @@
                                     ['destroy', 'Xóa tất cả', 'pages.destroy']
                                 ])
                                 @slot('columns', [
-                                    ['title', 'Tên nhóm', true],
-                                    ['users_count', 'Số thành viên', true, '100px'],
+                                    ['title', 'Tên trang', true],
+                                    ['status', 'Tình trạng', true, '100px'],
                                     ['created_at', 'Ngày tạo', true],
                                 ])
                                 @slot('actionColumn', true)

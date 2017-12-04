@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Admin\Page;
 
 use Illuminate\Http\Request;
-use App\UserGroup;
+use App\Page;
 use App\UserPermissionGroup;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\View;
@@ -34,7 +34,7 @@ class PageController extends Controller
         
         $groups = Page::query()
             // ->filters($filters)
-            ->withCount('languages')
+            // ->withCount('languages')
             ->paginate(20);
 
         return view('admin.pages.index', compact('groups'));
@@ -49,7 +49,7 @@ class PageController extends Controller
     {
         $this->authorize('pages.create');
         
-        // $page = new Page();
+        $page = new Page();
 
         return view('admin.pages.create', compact('page'));
     }
@@ -66,12 +66,14 @@ class PageController extends Controller
             'name' => 'required|string|max:255',
         ]);
         $data = $request->except(['_token', 'language']);
+        $data['slug'] = str_slug($data['name']);
         $data['published'] = $request->has('published') ? true : false;
         if ($page = Page::create($data)) {
             flash('Đã lưu nội dung trang thành công.', 'success');
         } else {
             flash('Đã lưu nội dung trang thất bại.', 'error');
         }
+        return redirect()->route('admin.pages.create');
     }
 
     /**
