@@ -12,5 +12,4 @@ var editor = function () {
 $(document).ready(function () {
     editor().init();
 });
-
-jQuery('.toggle').toggles({on: true});
+$('.toggle').toggles({ checkbox: $('.checkme') });

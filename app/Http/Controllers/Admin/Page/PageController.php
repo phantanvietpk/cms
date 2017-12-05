@@ -93,9 +93,11 @@ class PageController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Page $page)
     {
-        //
+        $this->authorize('edit', $page);
+
+        return view('admin.pages.edit', compact('page'));
     }
 
     /**
@@ -105,19 +107,16 @@ class PageController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Page $page)
     {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
+        $this->authorize('edit', $page);
+        $data = $request->validate([
+            'name' => 'required|string|max:255',
+        ]);
+        $data = $request->except(['_token', 'language']);
+        $data['published'] = $request->has('published') ? true : false;
+        $page->update($data);
+        flash('Đã lưu thông tin thành công.', 'success');
+        return back();
     }
 }

@@ -6,7 +6,6 @@
 <script src="{{ backend_asset('js/jquery.nicescroll.js') }}" type="text/javascript"></script>
 <script src="{{ backend_asset('vendor/sweet-alert/sweet-alert.min.js') }}"></script>
 <script src="{{ backend_asset('vendor/ckeditor/ckeditor.js') }}"></script>
-<script src="{{ backend_asset('vendor/toggles/toggles.min.js') }}"></script>
 
 <!--common script for all pages-->
 <script src="{{ backend_asset('js/jquery.app.js') }}"></script>
