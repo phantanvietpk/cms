@@ -22,9 +22,7 @@
                 @stack('heading')
             </div>
 
-            <div class="col-sm-12 clearfix">
             @include('flash::message')
-            </div>
 
             @yield('content')
         </div>
