@@ -5,7 +5,7 @@ namespace App;
 use App\Http\Filters\HasFilters;
 use Illuminate\Database\Eloquent\Model;
 
-class Page extends Model
+class Product extends Model
 {
     use HasFilters;
     /**
@@ -14,20 +14,27 @@ class Page extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 
-        'slug', 
+        'name',
         'description',
-        'published', 
-        'content'
+        'content',
+        'sku',
+        'images',
+        'status',
     ];
 
     protected $dates = [
         'created_at',
-        'updated_at',
-        'published_at'
+        'updated_at'
     ];
 
     protected $casts = [
-        'published' => 'boolean'
+        'status' => 'boolean'
     ];
+
+    public $timestamps = false;
+    
+    public function product()
+    {
+        return $this->belongsTo(Product::class);
+    }
 }

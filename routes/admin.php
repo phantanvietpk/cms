@@ -31,4 +31,11 @@ Route::group([
     Route::get('pages/actions', 'PageActionController@index')->name('pages.actions');
     Route::resource('pages', 'PageController', ['except' => ['show', 'destroy']]);
     });
+
+    // Product
+    Route::group([
+        'namespace' => 'Product'
+    ], function () {
+    Route::resource('products', 'ProductController', ['except' => ['show', 'destroy']]);
+    });
 });

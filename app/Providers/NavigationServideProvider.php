@@ -27,7 +27,10 @@ class NavigationServideProvider extends ServiceProvider
             ]
         ));
         $navigation->register(new NavigationItem(
-            'admin.pages.index', 'Trang nội dung', 'admin.pages.index', '*', 'fa fa-fw fa-file-text'
+            'admin.pages.index', 'Trang nội dung', 'admin.pages.index', '*', 'fa fa-fw fa-file-alt'
+        ));
+        $navigation->register(new NavigationItem(
+            'admin.products.index', 'Sản phẩm', 'admin.products.index', '*', 'fa  fa-fw fa-shopping-basket'
         ));
     }
 

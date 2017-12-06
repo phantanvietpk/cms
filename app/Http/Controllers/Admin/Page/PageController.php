@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin\Page;
 
 use Illuminate\Http\Request;
+use App\Http\Filters\PageFilters;
 use App\Page;
 use App\UserPermissionGroup;
 use App\Http\Controllers\Controller;
@@ -28,13 +29,12 @@ class PageController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(PageFilters $filters)
     {
         $this->authorize('pages.index');
         
         $groups = Page::query()
-            // ->filters($filters)
-            // ->withCount('languages')
+            ->filters($filters)
             ->paginate(20);
 
         return view('admin.pages.index', compact('groups'));
