@@ -3,17 +3,35 @@
 namespace App\Http\Controllers\Admin\Product;
 
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use App\Product;
+use App\Http\Filters\ProductFilters;
+use App\Support\Crawler\Crawler;
 
 class ProductController extends Controller
 {
+    /**
+     * PageController constructor.
+     */
+    public function __construct()
+    {
+
+        app('navigation')->setCurrentItem('admin.products.index');
+    }
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(ProductFilters $filters)
     {
-        //
+        $this->authorize('products.index');
+        
+        $products = Product::query()
+            ->filters($filters)
+            ->paginate(20);
+
+        return view('admin.products.index', compact('products'));
     }
 
     /**
@@ -23,7 +41,9 @@ class ProductController extends Controller
      */
     public function create()
     {
-        //
+        $this->authorize('products.create');
+
+        return view('admin.products.create');
     }
 
     /**
@@ -32,9 +52,10 @@ class ProductController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request, Crawler $crawler)
     {
-        //
+        $keyword = $request->name;
+        $crawler->excute($keyword);
     }
 
     /**

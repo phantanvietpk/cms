@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\View;
 class PageController extends Controller
 {
     /**
-     * GroupController constructor.
+     * PageController constructor.
      */
     public function __construct()
     {

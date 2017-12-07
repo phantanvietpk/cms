@@ -32,7 +32,7 @@
                     
                     <div class="form-group">
                         <button type="submit" class="btn btn-primary">
-                            <i class="fa fa-fw fa-save"></i> Lưu
+                            <i class="fa fa-fw fa-check-circle"></i> Lưu
                         </button>
                     </div>
             </div><!-- panel-body -->
