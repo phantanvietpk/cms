@@ -106,7 +106,9 @@ class Crawler {
                                                     $data['attribute_style'] = 'Men Tshirt';
                                                     $data['price'] = '18';
                                                 }
-                                                $this->productAttribute->create($data);
+                                                $product->productAttributes()->save(
+                                                    new ProductAttribute($data)
+                                                );
                                             }
                                         }
                                     }
