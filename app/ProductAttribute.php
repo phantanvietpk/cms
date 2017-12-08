@@ -21,8 +21,10 @@ class ProductAttribute extends Model
         'status' => 'boolean'
     ];
 
-    public function productAttributes()
+    public function product()
     {
-        return $this->hasMany(ProductAttribute::class, 'product_id');
+        return $this->belongsTo(Product::class);
     }
+
+     public $timestamps = false;
 }

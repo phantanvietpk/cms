@@ -22,12 +22,14 @@
                         <div class="col-md-12 col-sm-12 col-xs-12">
                             @component('admin.components.datatables')
                                 @slot('searchUrl', route('admin.products.index'))
-                                {{--  @slot('actionUrl', route('admin.products.actions'))  --}}
+                                @slot('actionUrl', route('admin.products.index'))
                                 @slot('actions', [
                                     ['destroy', 'Xóa tất cả', 'products.destroy']
                                 ])
                                 @slot('columns', [
+                                    ['images', 'Hình ảnh', false],
                                     ['title', 'Tên trang', true],
+                                    ['sku', 'Mã sản phẩm', true, '100px'],
                                     ['status', 'Tình trạng', true, '100px'],
                                     ['created_at', 'Ngày tạo', true],
                                 ])

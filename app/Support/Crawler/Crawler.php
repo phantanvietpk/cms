@@ -4,6 +4,8 @@ namespace App\Support\Crawler;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\TransferException;
+use App\Product;
+use App\ProductAttribute;
 
 class Crawler {
 
@@ -13,8 +15,10 @@ class Crawler {
     protected $end;
     protected $header;
 
-    public function __construct(Client $client)
+    public function __construct(Client $client, Product $product, ProductAttribute $productAttribute)
     {
+        $this->product = $product;
+        $this->productAttribute = $productAttribute;
         $this->client = $client;
         $this->header = [
         'host' => 'www.sunfrog.com',
@@ -33,22 +37,27 @@ class Crawler {
 
     public function excute ($keyword)
     {   
-        $this->url .= $keyword.'&cID=0';
+        $this->url .= $keyword.'&cID=0&offset=';
         $this->getContent($this->url);
-        // return $this->getItems();
+        return $this->getItems();
     }
 
     protected function getContent($url)
     {   
+        $page = 0;
         for ($i=$this->start; $i <= $this->end; $i++) {
+            if($i == 2) {
+                $page+=1;
+            }
             try {
                 $res = $this->client->request('GET', $url, ['headers' => $this->header]);
-                if($res->getStatusCode() === 200) {
-                    $this->content[$i] = strval($res->getBody());
-                }
+                    if($res->getStatusCode() === 200) {
+                        $this->content[$i] = strval($res->getBody());
+                    }
             } catch (\GuzzleHttp\Exception\RequestException $e) {
             } catch (\GuzzleHttp\Exception\ClientException $e) {
             } catch (\GuzzleHttp\Exception\ServerException $e) {}
+            $page+=40;
         }
     }
 
@@ -56,25 +65,58 @@ class Crawler {
     {
         for ($i=$this->start; $i <= $this->end; $i++) {
             if(preg_match_all('/<a href=\"(.*?)"  border=\"0">/is', $this->content[$i], $m)) {
-                try {
-                    $res = $this->client->request('GET', $link);
-                    if($res->getStatusCode() === 200) {
-                        $content = $res->getBody();
-                        // SKU
-                        if(preg_match('/<small>Product SKU: (.*?)<\/small>/is', $content, $sku)) {
-                            $sku = $sku[1];
-                        }
-                        if(preg_match('/<meta property=\"og:title" content=\"(.*?)"\/>/is',$content,$m)){
-                            $title = $m[1];
-                        }
-                        if(preg_match('/<meta property=\"og:description" content=\"(.*?)"\/>/is',$content,$m)){
-                            $body = $m[1];
-                        }
-                        
-                    } 
-                    } catch (\GuzzleHttp\Exception\RequestException $e) {
-                    } catch (\GuzzleHttp\Exception\ClientException $e) {
-                    } catch (\GuzzleHttp\Exception\ServerException $e) {}
+                foreach ($m[1] as $key => $link) {
+                    if($key == 0) {
+                        try {
+                        $res = $this->client->request('GET', $link);
+                            if($res->getStatusCode() === 200) {
+                                $content = $res->getBody();
+                                $data = [];
+                                // SKU
+                                if(preg_match('/<small>Product SKU: (.*?)<\/small>/is', $content, $sku)) {
+                                    $data['sku'] = $sku[1];
+                                }
+                                if(preg_match('/<meta property=\"og:title" content=\"(.*?)"\/>/is',$content,$m)){
+                                $data['name'] = $m[1];
+                                }
+                                if(preg_match('/<meta property=\"og:description" content=\"(.*?)"\/>/is',$content,$m)){
+                                    $data['description'] = str_limit($m[1],180);
+                                    $data['content'] = $m[1];
+                                }
+                                if(preg_match('/<img src=\'[\r\n]*([\S\s]*)[\r\n]*\' alt="(.*?)" width="651" height="651" id="MainImgShow"  class="img-responsive ">/is', $content, $m)){
+                                    $data['images'] = 'https:'.$m[1];
+                                }
+                                if($product = $this->product->create($data)){
+                                    if(preg_match_all('/onclick=\"window.location=\'(.*?)\';" title=\"(.*?)">/is', $content, $mLink)) {
+                                        if(isset($mLink[1])) {
+                                            foreach($mLink[1] as $iLink) {
+                                                $cLink = 'https://www.sunfrog.com/' . $iLink;
+                                                $res = $this->client->request('GET',$cLink);
+                                                $content = $res->getBody();
+                                                $data['product_id'] = $product->id;
+                                                if(preg_match('/<small>Product SKU: (.*?)<\/small>/is', $content, $sku)) {
+                                                    $data['sku'] = $sku[1];
+                                                }
+                                                if(preg_match('/<img src=\'[\r\n]*([\S\s]*)[\r\n]*\' alt="(.*?)" width="651" height="651" id="MainImgShow"  class="img-responsive ">/is', $content, $m)){
+                                                    $data['images'] = 'https:'.$m[1];
+                                                }
+                                                if(preg_match('/for="(.*?)" class=\"btn btn-default colorBorder active"/is', $content, $color)) {
+                                                    $data['attribute_color'] = $color[1];
+                                                    $data['attribute_size'] = 'S';
+                                                    $data['attribute_style'] = 'Men Tshirt';
+                                                    $data['price'] = '18';
+                                                }
+                                                $this->productAttribute->create($data);
+                                            }
+                                        }
+                                    }
+                                }
+                            } 
+                        } catch (\GuzzleHttp\Exception\RequestException $e) {
+                        } catch (\GuzzleHttp\Exception\ClientException $e) {
+                        } catch (\GuzzleHttp\Exception\ServerException $e) {}
+                    }
+                }
             }
         }
     }

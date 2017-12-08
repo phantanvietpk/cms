@@ -33,8 +33,9 @@ class Product extends Model
 
     public $timestamps = false;
     
-    public function product()
+    public function productAttributes()
     {
-        return $this->belongsTo(Product::class);
+        return $this->hasMany(ProductAttribute::class, 'product_id');
     }
+    
 }

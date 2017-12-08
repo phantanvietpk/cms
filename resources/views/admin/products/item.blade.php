@@ -1,3 +1,4 @@
+<td>{!! sprintf( '<img src="%s" width="100">', $item->images ) !!}</td>
 <td>
     <strong>{{ $item->name }}</strong><br>
     <div class="row-action">
@@ -17,6 +18,7 @@
         @endcan
     </div>
 </td>
+<td>{{ $item->sku }}</td>
 <td>{!! sprintf( '<span class="label label-%s">%s</span>',
                     $item->published ? 'success' : 'warning',
                     $item->published ? trans('language.published') : trans('language.trashed')
