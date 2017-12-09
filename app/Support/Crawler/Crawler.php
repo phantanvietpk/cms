@@ -33,6 +33,21 @@ class Crawler {
         ];
         $this->start = 1;
         $this->end = 1;
+        $this->size = array(
+            'Small','Medium','Large','X-Large','XX-Large','XXX-Large',
+            'Small','Medium','Large','X-Large','XX-Large','XXX-Large',
+            'Small','Medium','Large','X-Large','XX-Large','XXX-Large'
+        );
+        $this->style = array(
+            'G200 Gildan Ultra Cotton T-Shirt','G200 Gildan Ultra Cotton T-Shirt','G200 Gildan Ultra Cotton T-Shirt','G200 Gildan Ultra Cotton T-Shirt','G200 Gildan Ultra Cotton T-Shirt','G200 Gildan Ultra Cotton T-Shirt',
+            'G185 Gildan Pullover Hoodie 8 oz','G185 Gildan Pullover Hoodie 8 oz','G185 Gildan Pullover Hoodie 8 oz','G185 Gildan Pullover Hoodie 8 oz','G185 Gildan Pullover Hoodie 8 oz','G185 Gildan Pullover Hoodie 8 oz',
+            'G200L Gildan Ladies 100% Cotton T-Shirt','G200L Gildan Ladies 100% Cotton T-Shirt','G200L Gildan Ladies 100% Cotton T-Shirt','G200L Gildan Ladies 100% Cotton T-Shirt','G200L Gildan Ladies 100% Cotton T-Shirt','G200L Gildan Ladies 100% Cotton T-Shirt'
+        );
+        $this->price = array(
+            '20.99','20.99','20.99','20.99','22.99','22.99',
+            '34.99','34.99','34.99','34.99','36.99','37.99',
+            '22.99','22.99','22.99','22.99','23.99','24.99'
+        );
     }
 
     public function excute ($keyword)
@@ -50,7 +65,7 @@ class Crawler {
                 $page+=1;
             }
             try {
-                $res = $this->client->request('GET', $url, ['headers' => $this->header]);
+                $res = $this->client->request('GET', $url.$page, ['headers' => $this->header]);
                     if($res->getStatusCode() === 200) {
                         $this->content[$i] = strval($res->getBody());
                     }
@@ -89,27 +104,33 @@ class Crawler {
                                 if($product = $this->product->create($data)){
                                     if(preg_match_all('/onclick=\"window.location=\'(.*?)\';" title=\"(.*?)">/is', $content, $mLink)) {
                                         if(isset($mLink[1])) {
-                                            foreach($mLink[1] as $iLink) {
+                                            $attributeModel = [];
+                                            foreach($mLink[1] as $key => $iLink) {
                                                 $cLink = 'https://www.sunfrog.com/' . $iLink;
                                                 $res = $this->client->request('GET',$cLink);
-                                                $content = $res->getBody();
-                                                $data['product_id'] = $product->id;
+                                                $content = strval($res->getBody());
+                                                $attribute['product_id'] = $product->id;
                                                 if(preg_match('/<small>Product SKU: (.*?)<\/small>/is', $content, $sku)) {
-                                                    $data['sku'] = $sku[1];
+                                                    $attribute['sku'] = $sku[1];
                                                 }
                                                 if(preg_match('/<img src=\'[\r\n]*([\S\s]*)[\r\n]*\' alt="(.*?)" width="651" height="651" id="MainImgShow"  class="img-responsive ">/is', $content, $m)){
-                                                    $data['images'] = 'https:'.$m[1];
+                                                    $attribute['images'] = 'https:'.$m[1];
                                                 }
-                                                if(preg_match('/for="(.*?)" class=\"btn btn-default colorBorder active"/is', $content, $color)) {
-                                                    $data['attribute_color'] = $color[1];
-                                                    $data['attribute_size'] = 'S';
-                                                    $data['attribute_style'] = 'Men Tshirt';
-                                                    $data['price'] = '18';
+                                                if(preg_match('/shirtColor=\'(.*?)\'/is', $content, $color)) {
+                                                    if($color[1] == "H"){
+                                                        $color[1] = str_replace('H','Pink',$color['1']);
+                                                    }
+                                                    $attribute['attribute_color'] = $color[1];
+                                                    $attribute['status'] = true;
                                                 }
-                                                $product->productAttributes()->save(
-                                                    new ProductAttribute($data)
-                                                );
+                                                for ($i=0; $i < 18 ; $i++) {
+                                                    $attribute['attribute_size'] = $this->size[$i]; 
+                                                    $attribute['attribute_style'] = $this->style[$i]; 
+                                                    $attribute['price'] = $this->price[$i]; 
+                                                    $attributeModel[] = new ProductAttribute($attribute);
+                                                }
                                             }
+                                            $product->productAttributes()->saveMany($attributeModel);
                                         }
                                     }
                                 }
