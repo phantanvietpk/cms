@@ -20,6 +20,7 @@ class Product extends Model
         'sku',
         'images',
         'status',
+        'slug'
     ];
 
     protected $dates = [
@@ -36,6 +37,11 @@ class Product extends Model
     public function productAttributes()
     {
         return $this->hasMany(ProductAttribute::class, 'product_id');
+    }
+
+    public function getLinkAttribute()
+    {
+        return route('product.show', $this->getAttribute('slug'));
     }
     
 }

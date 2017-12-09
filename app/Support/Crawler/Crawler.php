@@ -93,6 +93,8 @@ class Crawler {
                                 }
                                 if(preg_match('/<meta property=\"og:title" content=\"(.*?)"\/>/is',$content,$m)){
                                 $data['name'] = $m[1];
+                                $data['slug'] = str_slug($m[1].'-'.$data['sku']);
+                                $data['status'] = true;
                                 }
                                 if(preg_match('/<meta property=\"og:description" content=\"(.*?)"\/>/is',$content,$m)){
                                     $data['description'] = str_limit($m[1],180);

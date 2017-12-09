@@ -11,7 +11,7 @@
 
 @stack('header')
 </head>
-<body>
+<body class="stretched">
 @yield('body')
 
 @stack('footer')
