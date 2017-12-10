@@ -245,7 +245,7 @@
                 <!-- Top Cart
                 ============================================= -->
                 <div id="top-cart">
-                    <a href="#" id="top-cart-trigger"><i class="icon-shopping-cart"></i><span>5</span></a>
+                    <a href="#" id="top-cart-trigger"><i class="icon-shopping-cart"></i><span>{{ Cart::count() }}</span></a>
                     <div class="top-cart-content">
                         <div class="top-cart-title">
                             <h4>Shopping Cart</h4>
@@ -274,7 +274,7 @@
                         </div>
                         <div class="top-cart-action clearfix">
                             <span class="fleft top-checkout-price">$114.95</span>
-                            <button class="button button-3d button-small nomargin fright">View Cart</button>
+                            <a href="{{ route('cart.list') }}" class="button button-3d button-small nomargin fright">View Cart</a>
                         </div>
                     </div>
                 </div><!-- #top-cart end -->

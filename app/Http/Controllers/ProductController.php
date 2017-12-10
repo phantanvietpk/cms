@@ -23,6 +23,21 @@ class ProductController extends Controller
         $gallrery = $product->productAttributes->map(function ($item) {
             return $item->images;
         })->unique()->values()->toArray();
-        return view('product.index',compact('product','gallrery'));   
-    }   
+        $productAttributes = $product->productAttributes->toArray();
+
+        $styles = $this->mappingProductAttributes($product->productAttributes, 'attribute_style'); 
+        $sizes = $this->mappingProductAttributes($product->productAttributes, 'attribute_size'); 
+        $colors = $this->mappingProductAttributes($product->productAttributes, 'attribute_color'); 
+
+        return view('product.index', compact(
+            'product','gallrery','productAttributes', 'styles', 'sizes', 'colors'
+        ));   
+    }
+
+    protected function mappingProductAttributes($attributes, $property)
+    {
+        return $attributes->map(function ($item) use ($property) {
+            return $item->getAttribute($property);
+        })->unique()->values()->toArray();
+    }
 }

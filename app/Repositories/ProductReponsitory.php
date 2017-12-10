@@ -32,4 +32,13 @@ class ProductRepository
         $product = $product->firstOrFail();
         return $product;
     }
+
+    public function getProductAttributes($id,$attributes)
+    {
+        $product = $this->products->where('id',$id)->first();
+        $product = $product->productAttributes->map(function ($item) use ($attributes) {
+            return $item->$attributes;
+        })->unique()->values()->toArray();
+        return $product;
+    }
 }
